@@ -59,7 +59,18 @@
 				</div>
 			</div>
 		</nav>
-		<div id="serieInfo"></div>
+		<div>
+			<div id="botonVolver"></div>
+			<table id="tablaPersonajes" class="table tabe-primary">
+				<thead>
+					<tr>
+						<th>Personaje</th>
+						<th>Imagen</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
 		<!-- jQuery -->
 		<script src="js/jquery-3.7.1.js"></script>
 		<!-- Bootstrap JS Bundle -->
@@ -84,26 +95,31 @@
 				}
 			);
 			const urlParams = new URLSearchParams(window.location.search);
-			const idSerie = urlParams.get("id");
+			const idSerie = urlParams.get("idserie");
 
 			function getSerie(idSerie) {
 				$.getJSON(
-					"https://apiseriespersonajes.azurewebsites.net/api/Series/" + idSerie,
+					"https://apiseriespersonajes.azurewebsites.net/api/Series/PersonajesSerie/" +
+						idSerie,
 					function (data) {
-						var html = "";
-						html += "<h2>" + data.nombre + "</h2>";
-						html +=
-							"<img src='" +
-							data.imagen +
-							"' alt='Imagen de serie' style='width: 200px; height: 200px;'>";
-						html += "<p>IMDB: " + data.puntuacion + "</p>";
-						html +=
-							"<a href='personajes.html?idserie=" +
-							data.idSerie +
-							"' class='btn btn-primary m-1'>Personajes</a>";
-						$("#serieInfo").html(html);
+						$.each(data, function (index, personaje) {
+							$("#tablaPersonajes").append(
+								"<tr><td>" +
+									personaje.nombre +
+									"</td>" +
+									'<td><img src="' +
+									personaje.imagen +
+									'" alt="Imagen del personaje" style="width: 100px; height: 100px;"></td>' +
+									"</tr>"
+							);
+						});
 					}
 				);
+				let boton =
+					"<a href='/serie.html?id=" +
+					idSerie +
+					"' class='btn btn-danger m-1'>Volver a serie</a>";
+				$("#botonVolver").append(boton);
 			}
 
 			getSerie(idSerie);

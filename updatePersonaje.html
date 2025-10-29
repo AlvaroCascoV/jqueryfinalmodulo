@@ -29,9 +29,7 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item">
-							<a class="nav-link active" aria-current="page" href="home.html">
-								Home
-							</a>
+							<a class="nav-link active" aria-current="page" href="#">Home</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/createPersonaje.html">
@@ -59,26 +57,22 @@
 				</div>
 			</div>
 		</nav>
-		<h1>Crear Personaje</h1>
-		<form id="insertPersonajeForm">
-			<div class="form-group">
-				<label>Nombre</label>
-				<input type="text" class="form-control" id="cajanombre" />
-			</div>
-			<div class="form-group">
-				<label>Imagen</label>
-				<input type="text" class="form-control" id="cajaimagen" />
-			</div>
+		<h1>Modificar personaje</h1>
+		<form id="updatePersonajeForm">
 			<div class="form-group">
 				<label>Serie</label>
 				<select class="form-control" id="selectserie"></select>
 			</div>
+			<div class="form-group">
+				<label>Personaje</label>
+				<select class="form-control" id="selectpersonaje"></select>
+			</div>
 			<button
 				class="btn btn-primary"
-				id="insertPersonajeButton"
-				onclick="insertPersonaje(event)"
+				id="updatePersonajeButton"
+				onclick="updatePersonaje(event)"
 			>
-				Insertar Personaje
+				Mover Personaje
 			</button>
 		</form>
 		<!-- jQuery -->
@@ -90,6 +84,7 @@
 			crossorigin="anonymous"
 		></script>
 		<script>
+			//series
 			$.getJSON(
 				"https://apiseriespersonajes.azurewebsites.net/api/Series",
 				function (data) {
@@ -111,24 +106,35 @@
 					});
 				}
 			);
+			//personajes
+			$.getJSON(
+				"https://apiseriespersonajes.azurewebsites.net/api/personajes",
+				function (data) {
+					$.each(data, function (index, personaje) {
+						$("#selectpersonaje").append(
+							"<option value='" +
+								personaje.idPersonaje +
+								"'>" +
+								personaje.nombre +
+								"</option>"
+						);
+					});
+				}
+			);
 
-			function insertPersonaje(event) {
+			function updatePersonaje(event) {
 				event.preventDefault();
-				let personaje = {
-					idPersonaje: 1,
-					nombre: $("#cajanombre").val(),
-					imagen: $("#cajaimagen").val(),
-					idSerie: parseInt($("#selectserie option:selected").val()),
-				};
-				personajeJSON = JSON.stringify(personaje);
+				let idSerie = parseInt($("#selectserie option:selected").val());
+				let idPersonaje = parseInt($("#selectpersonaje option:selected").val());
+				let request = idPersonaje + "/" + idSerie;
 				$.ajax({
-					url: "https://apiseriespersonajes.azurewebsites.net/api/Personajes",
-					type: "POST",
-					contentType: "application/json",
-					data: personajeJSON,
+					url:
+						"https://apiseriespersonajes.azurewebsites.net/api/Personajes/" +
+						request,
+					type: "PUT",
 					success: function (response) {
 						console.log("insertada correctamente");
-						let paginaSerie = "/serie.html?id=" + personaje.idSerie;
+						let paginaSerie = "/personajes.html?idserie=" + idSerie;
 						window.location.href = paginaSerie;
 					},
 				});

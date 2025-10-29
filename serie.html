@@ -29,7 +29,9 @@
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 						<li class="nav-item">
-							<a class="nav-link active" aria-current="page" href="#">Home</a>
+							<a class="nav-link active" aria-current="page" href="/home.html">
+								Home
+							</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/createPersonaje.html">
@@ -57,7 +59,7 @@
 				</div>
 			</div>
 		</nav>
-		<h1>Home Series</h1>
+		<div id="serieInfo"></div>
 		<!-- jQuery -->
 		<script src="js/jquery-3.7.1.js"></script>
 		<!-- Bootstrap JS Bundle -->
@@ -81,6 +83,30 @@
 					});
 				}
 			);
+			const urlParams = new URLSearchParams(window.location.search);
+			const idSerie = urlParams.get("id");
+
+			function getSerie(idSerie) {
+				$.getJSON(
+					"https://apiseriespersonajes.azurewebsites.net/api/Series/" + idSerie,
+					function (data) {
+						var html = "";
+						html += "<h2>" + data.nombre + "</h2>";
+						html +=
+							"<img src='" +
+							data.imagen +
+							"' alt='Imagen del equipo' style='width: 200px; height: 200px;'>";
+						html += "<p>IMDB: " + data.puntuacion + "</p>";
+						html +=
+							"<a href='jugadores.html?idserie=" +
+							data.idSerie +
+							"' class='btn btn-primary m-1'>Personajes</a>";
+						$("#serieInfo").html(html);
+					}
+				);
+			}
+
+			getSerie(idSerie);
 		</script>
 	</body>
 </html>

@@ -128,7 +128,7 @@
 					data: personajeJSON,
 					success: function (response) {
 						console.log("insertada correctamente");
-						let paginaSerie = "/serie.html?id=" + personaje.idSerie;
+						let paginaSerie = "/personajes.html?idserie=" + personaje.idSerie;
 						window.location.href = paginaSerie;
 					},
 				});
